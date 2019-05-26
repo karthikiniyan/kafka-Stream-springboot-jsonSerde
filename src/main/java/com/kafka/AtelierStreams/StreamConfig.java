@@ -1,6 +1,7 @@
 package com.kafka.AtelierStreams;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.processor.FailOnInvalidTimestamp;
@@ -11,6 +12,7 @@ import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 //import org.springframework.kafka.core.StreamsBuilderFactoryBean;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +45,13 @@ public class StreamConfig {
   public void setDefaults(Map<String, Object> config) {
     config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokersUrl);
     config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-    config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonDeserializer.class);
-    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+    
+    
+    
+    config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, MyOwnSerde.class);
+    config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, WeatherMetrics.class);
+    
+    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
     config.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, FailOnInvalidTimestamp.class);
   }
 

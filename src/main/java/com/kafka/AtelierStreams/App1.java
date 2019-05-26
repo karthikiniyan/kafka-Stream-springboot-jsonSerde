@@ -50,7 +50,7 @@ public class App1 {
 		final Serde<WeatherMetrics> mertricserde = Serdes.serdeFrom(metricser, metricdeser);
 		
 	  
-	  final KStream<String,Weather > source = builder.stream("Streams_input", Consumed.with(stringSerde, countryMessageSerd));
+	  final KStream<String,Weather > source = builder.stream("streaminput", Consumed.with(stringSerde, countryMessageSerd));
 	  
 	  KTable<String,WeatherMetrics> ktab = source.groupByKey().aggregate( 
 			  new Initializer<WeatherMetrics>() {
@@ -72,7 +72,7 @@ public class App1 {
 				});
 	  
 	  KStream<String,WeatherMetrics> kreturn = ktab.toStream();
-	  kreturn.to("Streams_output", Produced.with(stringSerde, mertricserde));
+	  kreturn.to("streamoutput", Produced.with(stringSerde, mertricserde));
 	  
 	  KafkaStreams streams = new KafkaStreams(builder.build(), sc);
 
