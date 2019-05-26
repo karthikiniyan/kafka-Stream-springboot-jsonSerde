@@ -1,4 +1,4 @@
-package com.Kafka.AtelierStreams;
+package com.kafka.AtelierStreams;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 //import org.springframework.kafka.core.StreamsBuilderFactoryBean;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class StreamConfig {
   public void setDefaults(Map<String, Object> config) {
     config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokersUrl);
     config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-    config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+    config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonDeserializer.class);
     config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     config.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, FailOnInvalidTimestamp.class);
   }
@@ -56,6 +57,8 @@ public class StreamConfig {
     config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 30000);
     config.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, threads);
     config.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, replicationFactor);
+    config.put(JsonDeserializer.TRUSTED_PACKAGES, "com.kafka.producer.service.Weather");
+    
     return new StreamsConfig(config);
 
   }

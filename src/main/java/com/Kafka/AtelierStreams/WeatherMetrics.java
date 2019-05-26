@@ -1,4 +1,4 @@
-package com.Kafka.AtelierStreams;
+package com.kafka.AtelierStreams;
 
 import java.io.Serializable;
 

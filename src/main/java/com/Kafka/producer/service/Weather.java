@@ -1,4 +1,4 @@
-package com.Kafka.AtelierStreams;
+package com.kafka.producer.service;
 
 import java.io.Serializable;
 

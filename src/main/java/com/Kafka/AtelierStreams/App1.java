@@ -1,4 +1,4 @@
-package com.Kafka.AtelierStreams;
+package com.kafka.AtelierStreams;
 
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
@@ -20,6 +20,10 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
+import com.kafka.producer.service.Weather;
+
+
+
 
 @Component
 public class App1 {
@@ -33,15 +37,15 @@ public class App1 {
 		
 		
 		
-		final Serializer<Weather> volvoSerializer = new JsonSerializer<Weather>();
-		final Deserializer<Weather> volvoDeserializer = new JsonDeserializer<Weather>();
-		
+		final JsonSerializer<Weather> volvoSerializer = new JsonSerializer<Weather>();
+		final JsonDeserializer<Weather> volvoDeserializer = new JsonDeserializer<Weather>();
+		volvoDeserializer.addTrustedPackages("*");
 		final Serde<Weather> countryMessageSerd = Serdes.serdeFrom(volvoSerializer, volvoDeserializer);
 		
 		
 		
-		final Serializer<WeatherMetrics> metricser = new JsonSerializer<WeatherMetrics>();
-		final Deserializer<WeatherMetrics> metricdeser = new JsonDeserializer<WeatherMetrics>();
+		final JsonSerializer<WeatherMetrics> metricser = new JsonSerializer<WeatherMetrics>();
+		final JsonDeserializer<WeatherMetrics> metricdeser = new JsonDeserializer<WeatherMetrics>();
 		
 		final Serde<WeatherMetrics> mertricserde = Serdes.serdeFrom(metricser, metricdeser);
 		
