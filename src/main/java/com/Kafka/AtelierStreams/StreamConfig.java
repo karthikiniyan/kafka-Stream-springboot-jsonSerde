@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
-import org.springframework.kafka.core.StreamsBuilderFactoryBean;
+//import org.springframework.kafka.core.StreamsBuilderFactoryBean;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +28,15 @@ public class StreamConfig {
   private String brokersUrl;
 
 
-  @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
-  public StreamsConfig kStreamsConfigs() {
-    Map<String, Object> config = new HashMap<>();
-    config.put(StreamsConfig.APPLICATION_ID_CONFIG, "default");
-    setDefaults(config);
-    return new StreamsConfig(config);
-  }
+	
+	/*
+	 * @Bean(name =
+	 * KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME) public
+	 * StreamsConfig kStreamsConfigs() { Map<String, Object> config = new
+	 * HashMap<>(); config.put(StreamsConfig.APPLICATION_ID_CONFIG, "default");
+	 * setDefaults(config); return new StreamsConfig(config); }
+	 */
+	 
 
 
   public void setDefaults(Map<String, Object> config) {
@@ -46,7 +48,7 @@ public class StreamConfig {
   }
 
   @Bean("app1StreamBuilder")
-  public StreamsBuilderFactoryBean app1StreamBuilderFactoryBean() {
+  public StreamsConfig app1StreamBuilderFactoryBean() {
     Map<String, Object> config = new HashMap<>();
     setDefaults(config);
     config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
@@ -54,13 +56,13 @@ public class StreamConfig {
     config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 30000);
     config.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, threads);
     config.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, replicationFactor);
-    return new StreamsBuilderFactoryBean(config);
+    return new StreamsConfig(config);
 
   }
 
   //
   @Bean("app2StreamBuilder")
-  public StreamsBuilderFactoryBean app2StreamBuilderFactoryBean() {
+  public StreamsConfig app2StreamBuilderFactoryBean() {
     Map<String, Object> config = new HashMap<>();
     setDefaults(config);
     config.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
@@ -68,6 +70,6 @@ public class StreamConfig {
     config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 30000);
     config.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, threads);
     config.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, replicationFactor);
-    return new StreamsBuilderFactoryBean(config);
+    return new StreamsConfig(config);
   }
 }

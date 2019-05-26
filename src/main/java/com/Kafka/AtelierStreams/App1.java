@@ -25,16 +25,25 @@ import org.springframework.stereotype.Component;
 public class App1 {
   @SuppressWarnings("unchecked")
   @Bean("app1StreamTopology")
-  public void startProcessing(@Qualifier("app1StreamBuilder") StreamsBuilder builder) {
+  public KStream<String, WeatherMetrics> startProcessing(@Qualifier("app1StreamBuilder") StreamsConfig sc) {
 	  
+	  StreamsBuilder builder = new StreamsBuilder();
 	  final Serde<String> stringSerde = Serdes.String();
       System.out.println("insided startprocessing");
+		
+		
 		
 		final Serializer<Weather> volvoSerializer = new JsonSerializer<Weather>();
 		final Deserializer<Weather> volvoDeserializer = new JsonDeserializer<Weather>();
 		
 		final Serde<Weather> countryMessageSerd = Serdes.serdeFrom(volvoSerializer, volvoDeserializer);
 		
+		
+		
+		final Serializer<WeatherMetrics> metricser = new JsonSerializer<WeatherMetrics>();
+		final Deserializer<WeatherMetrics> metricdeser = new JsonDeserializer<WeatherMetrics>();
+		
+		final Serde<WeatherMetrics> mertricserde = Serdes.serdeFrom(metricser, metricdeser);
 		
 	  
 	  final KStream<String,Weather > source = builder.stream("Streams_input", Consumed.with(stringSerde, countryMessageSerd));
@@ -58,8 +67,17 @@ public class App1 {
 					
 				});
 	  
+	  KStream<String,WeatherMetrics> kreturn = ktab.toStream();
+	  kreturn.to("Streams_output", Produced.with(stringSerde, mertricserde));
 	  
+	  KafkaStreams streams = new KafkaStreams(builder.build(), sc);
 
+	  streams.setUncaughtExceptionHandler((Thread t, Throwable e) -> {
+	        // TODO Auto-generated method stub
+	        System.out.println(e.getMessage());
+	    });
+	    streams.start();
+	  
 		/*
 		 * final KStream<String, Long> toSquare = builder.stream("toSquare",
 		 * Consumed.with(Serdes.String(), Serdes.Long())); toSquare.map((key, value) ->
@@ -68,6 +86,7 @@ public class App1 {
 		 * Produced.with(Serdes.String(), Serdes.Long())); // send downstream to another
 		 * topic
 		 */
+	    return kreturn;
     
   }
 
