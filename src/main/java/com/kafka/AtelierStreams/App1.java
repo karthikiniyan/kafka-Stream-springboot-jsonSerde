@@ -50,7 +50,7 @@ public class App1 {
 		final Serde<WeatherMetrics> mertricserde = Serdes.serdeFrom(metricser, metricdeser);
 		
 	  
-	  final KStream<String,Weather > source = builder.stream("streaminput", Consumed.with(stringSerde, countryMessageSerd));
+	  final KStream<String,Weather > source = builder.stream("Streams_input", Consumed.with(stringSerde, countryMessageSerd));
 	  
 	  KTable<String,WeatherMetrics> ktab = source.groupByKey().aggregate( 
 			  new Initializer<WeatherMetrics>() {
@@ -59,20 +59,35 @@ public class App1 {
 				public WeatherMetrics apply() {
 					// TODO Auto-generated method stub
 					WeatherMetrics wm = new WeatherMetrics();
+					wm.setMaxTemp(0d);
 					return wm;
 				} },new Aggregator<String ,Weather,WeatherMetrics>() {
 
 					@Override
 					public WeatherMetrics apply(String key, Weather value, WeatherMetrics aggregate) {
 						// TODO Auto-generated method stub
-						System.out.println("Heloo");
+						System.out.println(  value.toString());
+						//aggregate.setCity(value.getCity());
+						aggregate.setCount(1 + aggregate.getCount());
+						aggregate.setCountry(value.getCountry());
+						//aggregate.setMaxTemp(aggregate.getMaxTemp() > value.getTemp()?aggregate.getMaxTemp():value.getTemp());
+						System.out.println(value.getTemp());
+						System.out.println(aggregate.getMaxTemp());
+						if(aggregate.getMaxTemp() == null)
+							aggregate.setMaxTemp(0d);
+						if( value.getTemp() > aggregate.getMaxTemp())
+						{
+							aggregate.setMaxTemp(value.getTemp());
+							aggregate.setCity(value.getCity());
+						}
+						
 						return aggregate;
 					}
 					
 				});
 	  
 	  KStream<String,WeatherMetrics> kreturn = ktab.toStream();
-	  kreturn.to("streamoutput", Produced.with(stringSerde, mertricserde));
+	  kreturn.to("Streams_output", Produced.with(stringSerde, mertricserde));
 	  
 	  KafkaStreams streams = new KafkaStreams(builder.build(), sc);
 
