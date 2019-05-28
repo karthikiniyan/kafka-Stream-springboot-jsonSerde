@@ -1,6 +1,8 @@
 package com.kafka.AtelierStreams;
 
 import java.io.Serializable;
+import java.util.HashMap;
+
 
 public class WeatherMetrics implements Serializable{
 	/**
@@ -12,6 +14,16 @@ public class WeatherMetrics implements Serializable{
 	private String city;
 	private Double temp;
 	
+		
+	private HashMap<String, CityWeather> map = new HashMap<String, CityWeather>();
+	
+	
+	public HashMap<String, CityWeather> getMap() {
+		return map;
+	}
+	public void setMap(HashMap<String, CityWeather> map) {
+		this.map = map;
+	}
 	private Double maxTemp;
 	public Double getMaxTemp() {
 		return maxTemp;
@@ -70,7 +82,7 @@ public class WeatherMetrics implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "Weather [country=" + country + ", state=" + state + ", city=" + city + ", temp=" + temp + "]";
+		return "WeatherMetrics [country=" + country + ", state=" + state + ", city=" + city + ", temp=" + temp + "]";
 	}
 	
 	

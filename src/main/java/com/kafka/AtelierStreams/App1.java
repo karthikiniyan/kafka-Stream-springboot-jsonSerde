@@ -1,5 +1,7 @@
 package com.kafka.AtelierStreams;
 
+import java.util.HashMap;
+
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -51,6 +53,8 @@ public class App1 {
 		
 	  
 	  final KStream<String,Weather > source = builder.stream("Streams_input", Consumed.with(stringSerde, countryMessageSerd));
+	
+	  
 	  
 	  KTable<String,WeatherMetrics> ktab = source.groupByKey().aggregate( 
 			  new Initializer<WeatherMetrics>() {
@@ -60,6 +64,7 @@ public class App1 {
 					// TODO Auto-generated method stub
 					WeatherMetrics wm = new WeatherMetrics();
 					wm.setMaxTemp(0d);
+					
 					return wm;
 				} },new Aggregator<String ,Weather,WeatherMetrics>() {
 
@@ -69,17 +74,52 @@ public class App1 {
 						System.out.println(  value.toString());
 						//aggregate.setCity(value.getCity());
 						aggregate.setCount(1 + aggregate.getCount());
-						aggregate.setCountry(value.getCountry());
-						//aggregate.setMaxTemp(aggregate.getMaxTemp() > value.getTemp()?aggregate.getMaxTemp():value.getTemp());
-						System.out.println(value.getTemp());
-						System.out.println(aggregate.getMaxTemp());
-						if(aggregate.getMaxTemp() == null)
-							aggregate.setMaxTemp(0d);
-						if( value.getTemp() > aggregate.getMaxTemp())
-						{
-							aggregate.setMaxTemp(value.getTemp());
-							aggregate.setCity(value.getCity());
+						
+						System.out.println(value.getCity());
+						
+						HashMap<String, CityWeather> citymap = aggregate.getMap();
+						
+						if(citymap.get(value.getCity()) != null) {
+							
+							System.out.println("key"+ value.getCity());
+							
+							CityWeather cw = citymap.get(value.getCity());
+							
+							cw.setCurrTemp(value.getTemp());
+							
+							if(value.getTemp() > cw.getMaxTemp()) {
+								cw.setMaxTemp(value.getTemp());
+							}
+							
+							if(value.getTemp() < cw.getMaxTemp()) {
+								cw.setMinTemp(value.getTemp());
+							}
+							
+							System.out.println(cw.toString());
+							
+							citymap.put(value.getCity(), cw);
+							
+						}else {
+							
+							CityWeather cw = new CityWeather();
+							cw.setCity(value.getCity());
+							cw.setCountry(value.getCountry());
+							cw.setCurrTemp(value.getTemp());
+							cw.setMaxTemp(value.getTemp());
+							cw.setMinTemp(value.getTemp());
+							
+							System.out.println(cw.toString());
+							
+							citymap.put(value.getCity(), cw);
+							
 						}
+						
+						aggregate.setMap(citymap);
+						//aggregate.setMaxTemp(aggregate.getMaxTemp() > value.getTemp()?aggregate.getMaxTemp():value.getTemp());
+					
+						
+						
+					
 						
 						return aggregate;
 					}
