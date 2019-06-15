@@ -2,6 +2,7 @@ package com.kafka.AtelierStreams;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 
 public class WeatherMetrics implements Serializable{
@@ -9,80 +10,42 @@ public class WeatherMetrics implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 6872310476505347035L;
-	private String country;
-	private String state;
-	private String city;
-	private Double temp;
+
+	private String id;
 	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 		
 	private HashMap<String, CityWeather> map = new HashMap<String, CityWeather>();
 	
+	private int count;
 	
-	public HashMap<String, CityWeather> getMap() {
-		return map;
-	}
-	public void setMap(HashMap<String, CityWeather> map) {
-		this.map = map;
-	}
-	private Double maxTemp;
-	public Double getMaxTemp() {
-		return maxTemp;
-	}
-	public void setMaxTemp(Double maxTemp) {
-		this.maxTemp = maxTemp;
-	}
-	public Double getMinTemp() {
-		return minTemp;
-	}
-	public void setMinTemp(Double minTemp) {
-		this.minTemp = minTemp;
-	}
-	public Double getAvgTemp() {
-		return avgTemp;
-	}
-	public void setAvgTemp(Double avgTemp) {
-		this.avgTemp = avgTemp;
-	}
 	public int getCount() {
 		return count;
 	}
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public HashMap<String, CityWeather> getMap() {
+		return map;
 	}
-	private Double minTemp;
-	private Double avgTemp;
-	private int count;
+	public void setMap(HashMap<String, CityWeather> map) {
+		this.map = map;
+	}
 	
-	public String getCountry() {
-		return country;
-	}
-	public void setCountry(String country) {
-		this.country = country;
-	}
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
-	public Double getTemp() {
-		return temp;
-	}
-	public void setTemp(Double temp) {
-		this.temp = temp;
-	}
 	@Override
 	public String toString() {
-		return "WeatherMetrics [country=" + country + ", state=" + state + ", city=" + city + ", temp=" + temp + "]";
+		
+		for(Entry<String, CityWeather> cw : this.map.entrySet()){
+			
+			System.out.println("Key : " +cw.getKey() +", "+ "value :" + cw.getValue().toString());
+			
+		}
+		return "WeatherMetrics";
 	}
 	
 	

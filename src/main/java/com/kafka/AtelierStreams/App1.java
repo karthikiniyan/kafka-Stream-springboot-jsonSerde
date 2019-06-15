@@ -63,8 +63,6 @@ public class App1 {
 				public WeatherMetrics apply() {
 					// TODO Auto-generated method stub
 					WeatherMetrics wm = new WeatherMetrics();
-					wm.setMaxTemp(0d);
-					
 					return wm;
 				} },new Aggregator<String ,Weather,WeatherMetrics>() {
 
@@ -75,17 +73,19 @@ public class App1 {
 						//aggregate.setCity(value.getCity());
 						aggregate.setCount(1 + aggregate.getCount());
 						
-						System.out.println(value.getCity());
+						System.out.println("Count  : "+aggregate.getCount());
+						
+						aggregate.setId(value.getCity());
 						
 						HashMap<String, CityWeather> citymap = aggregate.getMap();
 						
 						if(citymap.get(value.getCity()) != null) {
 							
-							System.out.println("key"+ value.getCity());
 							
 							CityWeather cw = citymap.get(value.getCity());
 							
 							cw.setCurrTemp(value.getTemp());
+							cw.setState(value.getState());
 							
 							if(value.getTemp() > cw.getMaxTemp()) {
 								cw.setMaxTemp(value.getTemp());
@@ -103,6 +103,7 @@ public class App1 {
 							
 							CityWeather cw = new CityWeather();
 							cw.setCity(value.getCity());
+							cw.setState(value.getState());
 							cw.setCountry(value.getCountry());
 							cw.setCurrTemp(value.getTemp());
 							cw.setMaxTemp(value.getTemp());
@@ -118,7 +119,7 @@ public class App1 {
 						//aggregate.setMaxTemp(aggregate.getMaxTemp() > value.getTemp()?aggregate.getMaxTemp():value.getTemp());
 					
 						
-						
+						System.out.println(aggregate.toString());
 					
 						
 						return aggregate;
